@@ -2,11 +2,21 @@ var http = require("http");
 var fs = require("fs");
 var express = require("express");
 var path = require("path");
+var bodyParser = require("body-parser");
 var PORT = 8090;
 
 var app = express();
 
-var tables = [
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+app.use(bodyParser.text());
+app.use(bodyParser.json({
+  type: "application/vnd.api+json"
+}));
+
+var reservations = [
   {
     name: "Matt",
     phoneNumber: "1234567890",
@@ -27,6 +37,8 @@ var tables = [
   }
 ];
 
+var waitlist = [];
+
 app.listen(PORT, function() {
   console.log("Server listening on http://localhost:%s", PORT);
 });
@@ -44,6 +56,26 @@ app.get("/reserve", function(req, res) {
 });
 
 app.get("/api/tables", function(req, res) {
-  console.log(tables.length);
-    return res.json(tables);
+  console.log(reservations.length);
+    return res.json(reservations);
 });
+
+app.get("/api/waitlist", function(req, res) {
+  console.log(waitlist.length);
+    return res.json(waitlist);
+});
+
+app.post("/api/tables/new", function(req, res) {
+    var newReservation = req.body;
+    // console.log(newReservation);
+    if (reservations.length < 5) {
+      reservations.push(newReservation);
+      res.json(true);
+    }
+    else {
+      waitlist.push(newReservation);
+      res.json(false);
+    }
+
+});
+
