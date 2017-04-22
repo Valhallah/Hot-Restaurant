@@ -2,7 +2,6 @@ var http = require("http");
 var fs = require("fs");
 var express = require("express");
 var path = require("path");
-var mysql = require("mysql");
 var bodyParser = require("body-parser");
 var PORT = 8090;
 
